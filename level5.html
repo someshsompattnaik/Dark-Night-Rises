@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Level 05 — SQL Injection // Dark Night Rises</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#030508;--bg2:#080d14;--accent:#00ffe7;--accent2:#ff003c;--accent-med:#ffb800;--text:#c8d8e8;--dim:#4a6070;--glow:0 0 20px rgba(0,255,231,0.4);--font-mono:'Share Tech Mono',monospace;--font-display:'Orbitron',sans-serif;--font-body:'Rajdhani',sans-serif;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-height:100vh;cursor:crosshair;}
+  body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,231,0.012) 2px,rgba(0,255,231,0.012) 4px);pointer-events:none;z-index:9999;}
+  nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 40px;height:64px;background:rgba(3,5,8,.95);border-bottom:1px solid rgba(0,255,231,.1);}
+  .nav-brand{font-family:var(--font-display);font-size:13px;font-weight:900;color:var(--accent);text-shadow:var(--glow);letter-spacing:2px;text-decoration:none;}
+  .nav-back{font-family:var(--font-mono);font-size:11px;color:var(--dim);text-decoration:none;letter-spacing:2px;transition:color .2s;}
+  .nav-back:hover{color:var(--accent);}
+  .challenge-wrap{max-width:880px;margin:0 auto;padding:100px 40px 80px;}
+  .chall-badge{display:flex;align-items:center;gap:16px;margin-bottom:32px;flex-wrap:wrap;}
+  .badge-diff{font-family:var(--font-mono);font-size:9px;color:var(--accent-med);letter-spacing:4px;text-transform:uppercase;padding:4px 14px;border:1px solid rgba(255,180,0,.3);background:rgba(255,180,0,.08);clip-path:polygon(5px 0,100% 0,calc(100% - 5px) 100%,0 100%);}
+  .badge-pts,.badge-cat{font-family:var(--font-mono);font-size:9px;letter-spacing:4px;text-transform:uppercase;padding:4px 14px;clip-path:polygon(5px 0,100% 0,calc(100% - 5px) 100%,0 100%);}
+  .badge-pts{color:var(--accent);border:1px solid rgba(0,255,231,.2);background:rgba(0,255,231,.05);}
+  .badge-cat{color:var(--dim);border:1px solid rgba(255,255,255,.05);}
+  .chall-num{font-family:var(--font-display);font-size:11px;color:var(--dim);letter-spacing:4px;margin-bottom:12px;}
+  h1{font-family:var(--font-display);font-size:36px;font-weight:900;color:#fff;letter-spacing:2px;margin-bottom:24px;}
+  .chall-desc{font-family:var(--font-mono);font-size:13px;color:var(--dim);line-height:1.9;margin-bottom:40px;background:rgba(255,180,0,.02);border-left:2px solid rgba(255,180,0,.3);padding:20px 24px;}
+  .hint{color:var(--accent-med);display:block;margin-top:12px;}
+  .vuln-app{background:rgba(8,13,20,.95);border:1px solid rgba(255,180,0,.15);margin-bottom:32px;overflow:hidden;}
+  .app-bar{background:rgba(255,180,0,.06);padding:12px 20px;border-bottom:1px solid rgba(255,180,0,.1);display:flex;align-items:center;gap:12px;}
+  .app-title{font-family:var(--font-mono);font-size:11px;color:var(--accent-med);letter-spacing:3px;text-transform:uppercase;}
+  .app-url{font-family:var(--font-mono);font-size:10px;color:var(--dim);letter-spacing:1px;margin-left:auto;}
+  .app-body{padding:32px;}
+  .login-form h3{font-family:var(--font-display);font-size:16px;color:#fff;letter-spacing:2px;margin-bottom:20px;}
+  .form-field{margin-bottom:16px;}
+  .form-label{font-family:var(--font-mono);font-size:10px;color:var(--dim);letter-spacing:2px;text-transform:uppercase;display:block;margin-bottom:6px;}
+  .form-input{width:100%;background:rgba(0,255,231,.03);border:1px solid rgba(0,255,231,.15);color:var(--text);font-family:var(--font-mono);font-size:13px;padding:10px 14px;outline:none;transition:all .2s;}
+  .form-input:focus{border-color:var(--accent-med);}
+  .form-btn{font-family:var(--font-mono);font-size:11px;letter-spacing:3px;text-transform:uppercase;padding:10px 28px;background:rgba(255,180,0,.1);border:1px solid rgba(255,180,0,.3);color:var(--accent-med);cursor:pointer;transition:all .2s;clip-path:polygon(6px 0,100% 0,calc(100% - 6px) 100%,0 100%);}
+  .form-btn:hover{background:rgba(255,180,0,.2);}
+  .db-result{margin-top:20px;padding:16px;background:rgba(0,0,0,.4);border:1px solid rgba(0,255,231,.1);font-family:var(--font-mono);font-size:12px;min-height:60px;display:none;}
+  .db-query{font-family:var(--font-mono);font-size:11px;color:var(--dim);background:rgba(0,0,0,.4);padding:10px 14px;border-left:2px solid rgba(255,180,0,.3);margin-bottom:12px;word-break:break-all;}
+  .db-row{padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04);color:var(--text);}
+  .db-row.admin-row{color:var(--accent2);}
+  .db-flag{color:var(--accent);font-weight:bold;margin-top:8px;}
+  .code-hint{background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.06);padding:16px;margin-top:20px;font-family:var(--font-mono);font-size:12px;color:var(--dim);}
+  .code-hint span{color:#ffb800;}
+  .flag-submit{background:rgba(8,13,20,.95);border:1px solid rgba(0,255,231,.15);padding:32px;margin-bottom:40px;}
+  .flag-submit h3{font-family:var(--font-display);font-size:14px;color:#fff;letter-spacing:2px;margin-bottom:20px;}
+  .flag-input-row{display:flex;gap:12px;}
+  .flag-input{flex:1;background:rgba(0,255,231,.03);border:1px solid rgba(0,255,231,.15);color:var(--text);font-family:var(--font-mono);font-size:14px;padding:12px 16px;outline:none;transition:all .2s;}
+  .flag-input:focus{border-color:var(--accent);box-shadow:var(--glow);}
+  .flag-btn{font-family:var(--font-mono);font-size:12px;letter-spacing:3px;text-transform:uppercase;padding:12px 28px;background:transparent;border:1px solid var(--accent);color:var(--accent);cursor:pointer;transition:all .3s;clip-path:polygon(6px 0,100% 0,calc(100% - 6px) 100%,0 100%);white-space:nowrap;}
+  .flag-btn:hover{background:var(--accent);color:var(--bg);}
+  .flag-result{margin-top:12px;font-family:var(--font-mono);font-size:12px;padding:10px 14px;display:none;}
+  .flag-correct{background:rgba(0,255,100,.1);border:1px solid rgba(0,255,100,.3);color:#00ff88;}
+  .flag-wrong{background:rgba(255,0,60,.1);border:1px solid rgba(255,0,60,.3);color:var(--accent2);}
+  .som-stamp{position:fixed;bottom:20px;right:30px;font-family:var(--font-mono);font-size:11px;color:rgba(0,255,231,.15);letter-spacing:3px;pointer-events:none;z-index:100;}
+  .breadcrumb{font-family:var(--font-mono);font-size:10px;color:var(--dim);letter-spacing:2px;margin-bottom:24px;}
+  .breadcrumb a{color:var(--dim);text-decoration:none;}
+  .breadcrumb a:hover{color:var(--accent);}
+  .next-btn{display:inline-block;font-family:var(--font-mono);font-size:11px;letter-spacing:3px;text-transform:uppercase;padding:12px 28px;background:transparent;border:1px solid rgba(0,255,231,.15);color:var(--dim);text-decoration:none;transition:all .2s;clip-path:polygon(6px 0,100% 0,calc(100% - 6px) 100%,0 100%);}
+  .next-btn:hover{border-color:var(--accent);color:var(--accent);}
+</style>
+</head>
+<body>
+<div class="som-stamp">SOM // DNR // LVL-05</div>
+<nav>
+  <a href="../../index.html" class="nav-brand">DARK NIGHT RISES</a>
+  <a href="../challenges.html" class="nav-back">← CHALLENGES</a>
+</nav>
+<div class="challenge-wrap">
+  <div class="breadcrumb"><a href="../../index.html">HOME</a> / <a href="../challenges.html">CHALLENGES</a> / LEVEL 05</div>
+  <div class="chall-num">// LEVEL 05 OF 12 //</div>
+  <div class="chall-badge">
+    <span class="badge-diff">MEDIUM</span>
+    <span class="badge-pts">150 PTS</span>
+    <span class="badge-cat">WEB // INJECTION</span>
+  </div>
+  <h1>SQL INJECTION 101</h1>
+  <div class="chall-desc">
+    This login form builds its database query by concatenating user input directly. A classic SQL injection vulnerability. Break the WHERE clause logic to bypass authentication and dump the admin record containing the flag.
+    <br><br>
+    The backend query looks like: <code style="color:#ffb800;">SELECT * FROM users WHERE username='INPUT' AND password='INPUT'</code>
+    <span class="hint">// HINT: Try username: <code>admin' --</code> (the -- comments out the rest of the query)</span>
+  </div>
+  <div class="vuln-app">
+    <div class="app-bar">
+      <span class="app-title">VULNERABLE LOGIN PORTAL</span>
+      <span class="app-url">http://ctf.som.labs/login.php</span>
+    </div>
+    <div class="app-body">
+      <div class="login-form">
+        <h3>SYSTEM LOGIN</h3>
+        <div class="form-field">
+          <label class="form-label">USERNAME</label>
+          <input type="text" class="form-input" id="sqli-user" placeholder="username" value="">
+        </div>
+        <div class="form-field">
+          <label class="form-label">PASSWORD</label>
+          <input type="password" class="form-input" id="sqli-pass" placeholder="password" value="">
+        </div>
+        <button class="form-btn" onclick="doSQLi()">LOGIN</button>
+        <div class="code-hint">
+          <div>// Backend query (you can see this because it's a CTF):</div>
+          <div><span>SELECT</span> * <span>FROM</span> users <span>WHERE</span></div>
+          <div>&nbsp;&nbsp;username='<span id="q-user">...</span>'</div>
+          <div>&nbsp;&nbsp;<span>AND</span> password='<span id="q-pass">...</span>'</div>
+        </div>
+        <div class="db-result" id="db-result"></div>
+      </div>
+    </div>
+  </div>
+  <div class="flag-submit">
+    <h3>SUBMIT FLAG</h3>
+    <div class="flag-input-row">
+      <input type="text" class="flag-input" id="flagInput" placeholder="FLAG{...}" autocomplete="off">
+      <button class="flag-btn" onclick="checkFlag()">SUBMIT</button>
+    </div>
+    <div class="flag-result flag-correct" id="res-correct">✓ CORRECT FLAG! LEVEL 05 COMPLETE — +150 PTS</div>
+    <div class="flag-result flag-wrong" id="res-wrong">✗ INCORRECT FLAG — REFINE YOUR INJECTION</div>
+  </div>
+  <a href="level6.html" class="next-btn">NEXT CHALLENGE →</a>
+</div>
+<script>
+// Simulated DB
+const DB = [
+  { id: 1, username: 'guest', password: 'guest123', flag: null },
+  { id: 2, username: 'player', password: 'ctf2024', flag: null },
+  { id: 3, username: 'admin', password: 'n0t_3asy_t0_gu3ss', flag: 'FLAG{sql_1nj3ct10n_m4st3r_s0m}' },
+];
+
+// Update query display
+['sqli-user', 'sqli-pass'].forEach(id => {
+  document.getElementById(id).addEventListener('input', function() {
+    document.getElementById('q-user').textContent = document.getElementById('sqli-user').value || '...';
+    document.getElementById('q-pass').textContent = document.getElementById('sqli-pass').value || '...';
+  });
+});
+
+function doSQLi() {
+  const user = document.getElementById('sqli-user').value;
+  const pass = document.getElementById('sqli-pass').value;
+  const result = document.getElementById('db-result');
+  result.style.display = 'block';
+  result.innerHTML = '';
+
+  // Show the query
+  const queryEl = document.createElement('div');
+  queryEl.className = 'db-query';
+  queryEl.textContent = `SELECT * FROM users WHERE username='${user}' AND password='${pass}'`;
+  result.appendChild(queryEl);
+
+  // Simulate SQL injection
+  const isSQLi = user.includes("'") || user.includes('--') || user.includes('OR') || user.includes('or') || user.includes('1=1') || user.includes('#');
+  const bypassComment = user.includes('--') || user.includes('#');
+  const userPart = user.replace(/'.*/,'').trim();
+
+  if (isSQLi && bypassComment) {
+    // Injection successful - dump all rows after injected username
+    const injectedUser = userPart;
+    const matchedRows = injectedUser === '' ? DB : DB.filter(r => r.username === injectedUser);
+    const rowsToShow = matchedRows.length > 0 ? matchedRows : DB; // if admin' -- show admin
+    const adminMatch = DB.find(r => r.username === injectedUser || injectedUser === 'admin');
+    const showRows = adminMatch ? [adminMatch] : DB;
+    let html = `<div style="color:#00ff88;font-size:11px;margin-bottom:8px;">✓ INJECTION SUCCESSFUL — QUERY RETURNED ${showRows.length} ROW(S)</div>`;
+    showRows.forEach(r => {
+      html += `<div class="db-row ${r.flag ? 'admin-row' : ''}">`;
+      html += `id=${r.id} | username=${r.username} | password=${r.password}`;
+      if (r.flag) html += `<div class="db-flag">FLAG: ${r.flag}</div>`;
+      html += '</div>';
+    });
+    result.innerHTML += html;
+  } else if (isSQLi) {
+    result.innerHTML += '<div style="color:#ffb800;">⚠ SYNTAX ISSUE — Try commenting out the rest with --</div>';
+  } else {
+    const match = DB.find(r => r.username === user && r.password === pass);
+    if (match) {
+      result.innerHTML += `<div class="db-row">LOGIN OK — Welcome ${match.username}</div>`;
+    } else {
+      result.innerHTML += '<div style="color:var(--accent2);">✗ INVALID CREDENTIALS</div>';
+    }
+  }
+}
+const FLAG = "FLAG{sql_1nj3ct10n_m4st3r_s0m}";
+function checkFlag() {
+  const input = document.getElementById('flagInput').value.trim();
+  const c = document.getElementById('res-correct'), w = document.getElementById('res-wrong');
+  c.style.display='none'; w.style.display='none';
+  if (input === FLAG) { c.style.display='block'; } else { w.style.display='block'; }
+}
+document.getElementById('flagInput').addEventListener('keydown', e => { if (e.key==='Enter') checkFlag(); });
+document.getElementById('sqli-pass').addEventListener('keydown', e => { if (e.key==='Enter') doSQLi(); });
+</script>
+</body>
+</html>

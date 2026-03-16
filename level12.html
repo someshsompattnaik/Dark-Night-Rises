@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Level 12 — The Final Cipher | Dark Night Rises</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Rajdhani:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--bg:#030508;--bg2:#080d14;--bg3:#0d1520;--cyan:#00ffe7;--red:#ff003c;--amber:#ffb800;--green:#00ff41;--gold:#ffd700;}
+body{background:var(--bg);color:#c8d8e8;font-family:'Rajdhani',sans-serif;min-height:100vh;}
+canvas#matrix{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;opacity:.05;}
+.scanlines{position:fixed;top:0;left:0;width:100%;height:100%;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,231,.015) 2px,rgba(0,255,231,.015) 4px);z-index:1;pointer-events:none;}
+nav{position:fixed;top:0;width:100%;z-index:100;background:rgba(3,5,8,.9);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,215,0,.2);padding:0 2rem;}
+.nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:60px;}
+.logo{font-family:'Orbitron',sans-serif;font-size:1rem;color:var(--cyan);letter-spacing:2px;text-decoration:none;}
+.logo span{color:#fff;}
+nav ul{display:flex;gap:2rem;list-style:none;}
+nav a{color:#7a8a9a;font-family:'Share Tech Mono',monospace;font-size:.8rem;text-decoration:none;transition:.2s;}
+nav a:hover{color:var(--cyan);}
+.status-dot{width:8px;height:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 12px var(--gold);animation:pulse 1s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+main{position:relative;z-index:10;max-width:900px;margin:0 auto;padding:100px 2rem 4rem;}
+.breadcrumb{font-family:'Share Tech Mono',monospace;font-size:.75rem;color:#4a5a6a;margin-bottom:2rem;}
+.breadcrumb a{color:#4a5a6a;text-decoration:none;}
+.challenge-header{border:2px solid var(--gold);background:rgba(8,13,20,.9);padding:2rem;margin-bottom:2rem;clip-path:polygon(0 0,calc(100% - 20px) 0,100% 20px,100% 100%,0 100%);position:relative;overflow:hidden;}
+.challenge-header::before{content:'FINAL BOSS';position:absolute;right:-20px;top:10px;font-family:'Orbitron',sans-serif;font-size:5rem;color:rgba(255,215,0,.04);white-space:nowrap;pointer-events:none;}
+.badge-row{display:flex;gap:1rem;align-items:center;margin-bottom:1rem;flex-wrap:wrap;}
+.badge{font-family:'Share Tech Mono',monospace;font-size:.7rem;padding:.3rem .8rem;border:1px solid;clip-path:polygon(6px 0,100% 0,calc(100% - 6px) 100%,0 100%);}
+h1{font-family:'Orbitron',sans-serif;font-size:2rem;color:var(--gold);margin-bottom:.5rem;text-shadow:0 0 20px rgba(255,215,0,.3);}
+.desc{color:#7a8a9a;line-height:1.7;}
+.panel{border:1px solid rgba(0,255,231,.15);background:rgba(8,13,20,.7);padding:1.5rem;margin-bottom:1.5rem;}
+.panel.gold-panel{border-color:rgba(255,215,0,.3);}
+.panel-title{font-family:'Orbitron',sans-serif;font-size:.75rem;color:var(--cyan);letter-spacing:2px;margin-bottom:1rem;}
+.panel-title.gold{color:var(--gold);}
+.cipher-block{background:#000;border:1px solid rgba(0,255,231,.2);padding:1.5rem;font-family:'Share Tech Mono',monospace;font-size:.78rem;color:var(--green);line-height:2;word-break:break-all;position:relative;}
+.cipher-block .label{color:#4a5a6a;display:block;margin-bottom:.5rem;}
+.blocks-visual{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin:1rem 0;}
+.ecb-block{border:2px solid;padding:.5rem;text-align:center;font-family:'Share Tech Mono',monospace;font-size:.65rem;}
+.btn{font-family:'Orbitron',sans-serif;font-size:.75rem;letter-spacing:2px;padding:.75rem 1.5rem;border:1px solid var(--cyan);background:transparent;color:var(--cyan);cursor:pointer;clip-path:polygon(8px 0,100% 0,calc(100% - 8px) 100%,0 100%);transition:.2s;}
+.btn:hover{background:rgba(0,255,231,.1);}
+.btn-gold{border-color:var(--gold);color:var(--gold);}
+.btn-gold:hover{background:rgba(255,215,0,.1);}
+textarea{width:100%;background:#000;border:1px solid rgba(0,255,231,.2);color:var(--cyan);font-family:'Share Tech Mono',monospace;font-size:.75rem;padding:.75rem;resize:vertical;min-height:100px;outline:none;transition:.2s;}
+textarea:focus{border-color:var(--cyan);}
+.tool-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.response-box{background:#000;border:1px solid rgba(0,255,231,.15);padding:1rem;font-family:'Share Tech Mono',monospace;font-size:.78rem;min-height:80px;color:#c8d8e8;line-height:1.8;white-space:pre-wrap;margin-top:1rem;}
+.hint-box{border:1px solid rgba(255,184,0,.2);background:rgba(255,184,0,.04);padding:1rem;font-family:'Share Tech Mono',monospace;font-size:.78rem;color:var(--amber);line-height:1.8;}
+select{width:100%;background:#000;border:1px solid rgba(0,255,231,.2);color:var(--cyan);font-family:'Share Tech Mono',monospace;font-size:.8rem;padding:.6rem;outline:none;}
+label{font-family:'Share Tech Mono',monospace;font-size:.75rem;color:#4a8a7a;display:block;margin-bottom:.4rem;}
+.flag-submit{display:flex;gap:1rem;margin-top:1.5rem;}
+.flag-input{flex:1;background:#000;border:1px solid rgba(255,215,0,.3);color:var(--gold);font-family:'Share Tech Mono',monospace;font-size:.9rem;padding:.75rem 1rem;outline:none;clip-path:polygon(8px 0,100% 0,calc(100% - 8px) 100%,0 100%);}
+.success-overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.92);align-items:center;justify-content:center;}
+.success-box{border:2px solid var(--gold);background:#030508;padding:3rem;text-align:center;max-width:560px;width:90%;clip-path:polygon(20px 0,100% 0,100% calc(100% - 20px),calc(100% - 20px) 100%,0 100%,0 20px);box-shadow:0 0 60px rgba(255,215,0,.15);}
+.success-box h2{font-family:'Orbitron',sans-serif;color:var(--gold);font-size:1.8rem;margin-bottom:1rem;text-shadow:0 0 30px rgba(255,215,0,.5);}
+.success-flag{font-family:'Share Tech Mono',monospace;font-size:.85rem;color:var(--green);background:#000;padding:1rem;border:1px solid var(--green);margin:1rem 0;word-break:break-all;}
+.congrats{font-family:'Share Tech Mono',monospace;font-size:.85rem;color:var(--cyan);line-height:1.8;margin-top:1rem;}
+.watermark-br{position:fixed;bottom:20px;right:20px;font-family:'Share Tech Mono',monospace;font-size:.65rem;color:rgba(0,255,231,.12);z-index:50;text-align:right;pointer-events:none;}
+.watermark-side{position:fixed;left:-30px;top:50%;transform:translateY(-50%) rotate(-90deg);font-family:'Share Tech Mono',monospace;font-size:.6rem;color:rgba(0,255,231,.08);z-index:50;white-space:nowrap;pointer-events:none;letter-spacing:3px;}
+footer{position:relative;z-index:10;border-top:1px solid rgba(255,215,0,.1);padding:2rem;text-align:center;font-family:'Share Tech Mono',monospace;font-size:.7rem;color:#2a3a4a;margin-top:4rem;}
+</style>
+</head>
+<body>
+<canvas id="matrix"></canvas>
+<div class="scanlines"></div>
+<div class="watermark-br">SOM // DARK NIGHT RISES<br>CTF PLATFORM v1.0</div>
+<div class="watermark-side">SOM // CTF // DARK NIGHT RISES</div>
+
+<nav>
+  <div class="nav-inner">
+    <a href="../index.html" class="logo">DARK NIGHT <span>RISES</span></a>
+    <ul>
+      <li><a href="../index.html">HOME</a></li>
+      <li><a href="../challenges.html">CHALLENGES</a></li>
+      <li><a href="../scoreboard.html">SCOREBOARD</a></li>
+      <li><a href="../rules.html">RULES</a></li>
+    </ul>
+    <div class="status-dot"></div>
+  </div>
+</nav>
+
+<main>
+  <div class="breadcrumb"><a href="../challenges.html">CHALLENGES</a> / LEVEL 12 / THE FINAL CIPHER</div>
+
+  <div class="challenge-header">
+    <div class="badge-row">
+      <span class="badge" style="color:var(--gold);border-color:var(--gold);background:rgba(255,215,0,.08);">HARD</span>
+      <span class="badge" style="color:var(--gold);border-color:var(--gold);background:rgba(255,215,0,.08);">500 PTS ★</span>
+      <span class="badge" style="color:#a855f7;border-color:#a855f7;background:rgba(168,85,247,.08);">CRYPTO</span>
+      <span class="badge" style="color:var(--red);border-color:var(--red);background:rgba(255,0,60,.08);">FINAL BOSS</span>
+    </div>
+    <h1>THE FINAL CIPHER</h1>
+    <p class="desc">The vault is protected with AES-ECB encryption. A critical weakness: ECB mode encrypts identical plaintext blocks to <em>identical ciphertext blocks</em>. Exploit this pattern to decrypt the master flag without knowing the key.</p>
+  </div>
+
+  <div class="panel gold-panel">
+    <div class="panel-title gold">// INTERCEPTED ENCRYPTED MESSAGE</div>
+    <div class="cipher-block">
+      <span class="label">// VAULT CIPHERTEXT (hex-encoded AES-ECB blocks):</span>
+      4e2f3a8b1c9d7e5f | 4e2f3a8b1c9d7e5f | a1b2c3d4e5f67890 | 4e2f3a8b1c9d7e5f
+      <br>9f8e7d6c5b4a3210 | 3c4d5e6f7a8b9c0d | 4e2f3a8b1c9d7e5f | 7f6e5d4c3b2a1908
+      <br>2a3b4c5d6e7f8091 | 4e2f3a8b1c9d7e5f | b0c1d2e3f4051627 | 4e2f3a8b1c9d7e5f
+    </div>
+    <p style="font-family:'Share Tech Mono',monospace;font-size:.73rem;color:var(--amber);margin-top:.7rem;">[!] Notice anything? Some blocks are IDENTICAL — that's the ECB weakness.</p>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">// ECB BLOCK PATTERN VISUALIZER</div>
+    <p style="font-size:.85rem;color:#7a8a9a;margin-bottom:1rem;">AES-ECB encrypts each 16-byte block independently. Equal plaintext = equal ciphertext. Color matching reveals structure:</p>
+    <div class="blocks-visual" id="blockVisual"></div>
+    <button class="btn" onclick="visualizeBlocks()">ANALYZE BLOCK PATTERNS</button>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">// CHOSEN PLAINTEXT ORACLE</div>
+    <p style="font-size:.85rem;color:#7a8a9a;margin-bottom:1rem;">You have access to an encryption oracle. Encrypt known plaintexts and compare block patterns to decode the vault message byte by byte.</p>
+    <div class="tool-grid">
+      <div>
+        <label>PLAINTEXT INPUT:</label>
+        <textarea id="ptInput" placeholder="Enter plaintext to encrypt...&#10;Try: 'AAAAAAAAAAAAAAAA' (16 A's)&#10;Or:  'SOM_SECRET_VAULT'"></textarea>
+      </div>
+      <div>
+        <label>ORACLE OUTPUT (ECB encrypted):</label>
+        <div class="response-box" id="oracleOutput">// Encrypt a plaintext to see ECB blocks...</div>
+      </div>
+    </div>
+    <button class="btn" onclick="encryptOracle()" style="margin-top:1rem;">⚡ ENCRYPT VIA ORACLE</button>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">// DECRYPTION WORKBENCH</div>
+    <div class="hint-box" style="margin-bottom:1rem;">
+      [STEP 1] Observe that block <code>4e2f3a8b1c9d7e5f</code> repeats 6 times.<br>
+      [STEP 2] This repeated block = encrypted "SOM_VAULT_KEY_16" (the repeating key).<br>
+      [STEP 3] The non-repeating blocks contain the actual flag data.<br>
+      [STEP 4] XOR the unique blocks with the key pattern to reveal the flag.<br>
+      [STEP 5] Use the decoder below.
+    </div>
+    <label>SELECT DECRYPTION OPERATION:</label>
+    <select id="decryptOp" style="margin-bottom:1rem;">
+      <option value="">-- Choose operation --</option>
+      <option value="identify">Identify repeating key block</option>
+      <option value="extract">Extract unique data blocks</option>
+      <option value="xor">XOR with key pattern</option>
+      <option value="decode">Final decode → plaintext</option>
+    </select>
+    <button class="btn" onclick="runDecrypt()">RUN OPERATION</button>
+    <div class="response-box" id="decryptOutput">// Select an operation and run it...</div>
+  </div>
+
+  <div class="panel gold-panel">
+    <div class="panel-title gold">// FLAG SUBMISSION — FINAL CHALLENGE</div>
+    <div class="flag-submit">
+      <input class="flag-input" type="text" id="flagInput" placeholder="FLAG{...}" />
+      <button class="btn btn-gold" onclick="checkFlag()">⚡ SUBMIT FINAL FLAG</button>
+    </div>
+    <div id="flagMsg" style="margin-top:.75rem;font-family:'Share Tech Mono',monospace;font-size:.8rem;"></div>
+  </div>
+</main>
+
+<div class="success-overlay" id="successOverlay">
+  <div class="success-box">
+    <h2>🏆 VAULT CRACKED 🏆</h2>
+    <p style="color:var(--amber);font-family:'Share Tech Mono',monospace;font-size:.9rem;margin-bottom:1rem;">ALL 12 CHALLENGES CONQUERED</p>
+    <div class="success-flag">FLAG{4es_3cb_p4tt3rn_l34k_s0m_m4st3r_h4ck3r}</div>
+    <p style="color:#4a5a6a;font-family:'Share Tech Mono',monospace;font-size:.7rem;">+500 POINTS AWARDED</p>
+    <div class="congrats">
+      ██████████████████████████████████<br>
+      ██  DARK NIGHT RISES — COMPLETE  ██<br>
+      ██  CREATED BY SOM               ██<br>
+      ██  YOU ARE A TRUE HACKER        ██<br>
+      ██████████████████████████████████
+    </div>
+    <button class="btn btn-gold" onclick="document.getElementById('successOverlay').style.display='none'" style="margin-top:1.5rem;">CLAIM VICTORY</button>
+  </div>
+</div>
+
+<footer>DARK NIGHT RISES // CTF PLATFORM BY SOM // FINAL CHALLENGE — ALL CHALLENGES ARE SIMULATED VULNERABILITIES FOR EDUCATIONAL PURPOSES</footer>
+
+<script>
+const c=document.getElementById('matrix');const ctx=c.getContext('2d');
+function resizeCanvas(){c.width=window.innerWidth;c.height=window.innerHeight;}
+resizeCanvas();window.addEventListener('resize',resizeCanvas);
+const cols=Math.floor(window.innerWidth/20);const drops=Array(cols).fill(1);
+const chars='アイウエオ0123456789ABCDEF><{}[]SOM★';
+function drawMatrix(){ctx.fillStyle='rgba(3,5,8,0.04)';ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle='#ffd700';ctx.font='14px monospace';drops.forEach((y,i)=>{const ch=chars[Math.floor(Math.random()*chars.length)];ctx.fillText(ch,i*20,y*20);if(y*20>c.height&&Math.random()>.975)drops[i]=0;drops[i]++;});}
+setInterval(drawMatrix,50);
+
+const blocks = [
+  '4e2f3a8b1c9d7e5f','4e2f3a8b1c9d7e5f','a1b2c3d4e5f67890','4e2f3a8b1c9d7e5f',
+  '9f8e7d6c5b4a3210','3c4d5e6f7a8b9c0d','4e2f3a8b1c9d7e5f','7f6e5d4c3b2a1908',
+  '2a3b4c5d6e7f8091','4e2f3a8b1c9d7e5f','b0c1d2e3f4051627','4e2f3a8b1c9d7e5f'
+];
+const blockColors = {
+  '4e2f3a8b1c9d7e5f': {bg:'rgba(0,255,231,.12)',border:'#00ffe7',label:'KEY'},
+  'a1b2c3d4e5f67890': {bg:'rgba(255,0,60,.12)',border:'#ff003c',label:'DATA'},
+  '9f8e7d6c5b4a3210': {bg:'rgba(168,85,247,.12)',border:'#a855f7',label:'DATA'},
+  '3c4d5e6f7a8b9c0d': {bg:'rgba(255,184,0,.12)',border:'#ffb800',label:'DATA'},
+  '7f6e5d4c3b2a1908': {bg:'rgba(0,255,65,.12)',border:'#00ff41',label:'DATA'},
+  '2a3b4c5d6e7f8091': {bg:'rgba(255,100,0,.12)',border:'#ff6400',label:'DATA'},
+  'b0c1d2e3f4051627': {bg:'rgba(0,100,255,.12)',border:'#0064ff',label:'DATA'},
+};
+
+function visualizeBlocks() {
+  const v = document.getElementById('blockVisual');
+  v.innerHTML = blocks.map((b,i) => {
+    const col = blockColors[b] || {bg:'rgba(100,100,100,.1)',border:'#666',label:'UNK'};
+    return `<div class="ecb-block" style="background:${col.bg};border-color:${col.border};color:${col.border};">
+      <div style="font-size:.5rem;margin-bottom:.3rem">[${col.label}]</div>
+      <div style="font-size:.55rem">${b.substring(0,8)}...</div>
+      <div style="font-size:.5rem;color:#4a5a6a">Block ${i+1}</div>
+    </div>`;
+  }).join('');
+}
+visualizeBlocks();
+
+function encryptOracle() {
+  const pt = document.getElementById('ptInput').value;
+  const out = document.getElementById('oracleOutput');
+  if(!pt) { out.textContent='// Enter plaintext first'; return; }
+  
+  out.textContent='[ORACLE] Encrypting with AES-ECB...\n';
+  setTimeout(()=>{
+    const chunkSize = 16;
+    let result = '';
+    for(let i=0;i<pt.length;i+=chunkSize) {
+      const chunk = pt.substring(i,i+chunkSize).padEnd(chunkSize,' ');
+      // Simulate ECB: same block = same output
+      let hash = 0;
+      for(let j=0;j<chunk.length;j++) hash = ((hash<<5)-hash)+chunk.charCodeAt(j);
+      const blockHex = Math.abs(hash).toString(16).padStart(16,'0').substring(0,16);
+      result += blockHex + ' | ';
+    }
+    out.textContent = `[200 OK] AES-ECB Encrypted:\n${result.slice(0,-3)}\n\n// Identical input blocks produce identical output blocks!`;
+  }, 600);
+}
+
+const decryptSteps = {
+  'identify': `[ANALYSIS] Scanning ciphertext blocks...\n\nBlock frequency count:\n  4e2f3a8b1c9d7e5f → appears 6 times ← REPEATING KEY BLOCK\n  a1b2c3d4e5f67890 → appears 1 time\n  9f8e7d6c5b4a3210 → appears 1 time\n  3c4d5e6f7a8b9c0d → appears 1 time\n  (+ 3 more unique blocks)\n\n[!] KEY IDENTIFIED: 4e2f3a8b1c9d7e5f\n[!] This block encrypts the repeating plaintext: "SOM_VAULT_KEY_16"`,
+  'extract': `[EXTRACTION] Removing key blocks, isolating data...\n\nData blocks (in order):\n  Block 3:  a1b2c3d4e5f67890 → "FLAG{4es_"\n  Block 5:  9f8e7d6c5b4a3210 → "3cb_p4tt3"\n  Block 6:  3c4d5e6f7a8b9c0d → "rn_l34k_s"\n  Block 8:  7f6e5d4c3b2a1908 → "0m_m4st3r"\n  Block 9:  2a3b4c5d6e7f8091 → "_h4ck3r}"\n  Block 11: b0c1d2e3f4051627 → "[padding]"\n\n[+] 6 unique data blocks extracted`,
+  'xor': `[XOR] Applying key pattern to data blocks...\n\nKey stream: SOM_VAULT_KEY_16 (repeating)\n\nBlock 3 XOR key  → "FLAG{4es_"\n  a1b2c3d4... XOR 4e2f3a8b... = 46 4c 41 47 7b 34 65 73 5f\nBlock 5 XOR key  → "3cb_p4tt3"\nBlock 6 XOR key  → "rn_l34k_s"\nBlock 8 XOR key  → "0m_m4st3r"\nBlock 9 XOR key  → "_h4ck3r}"\n\n[+] XOR complete — assembling plaintext...`,
+  'decode': `[DECODE] Assembling final plaintext...\n\n████████████████████████████████████\n  DECRYPTED MESSAGE:\n  FLAG{4es_3cb_p4tt3rn_l34k_s0m_m4st3r_h4ck3r}\n████████████████████████████████████\n\n[!] AES-ECB mode leaks plaintext patterns through ciphertext patterns.\n[!] NEVER use ECB mode for encrypting structured/repetitive data.\n[!] Use CBC, GCM, or CTR mode instead.`,
+};
+
+function runDecrypt() {
+  const op = document.getElementById('decryptOp').value;
+  const out = document.getElementById('decryptOutput');
+  if(!op) { out.textContent='// Select an operation first'; return; }
+  out.textContent='[...] Running operation...';
+  setTimeout(()=>{ out.textContent = decryptSteps[op]; },700);
+}
+
+function checkFlag() {
+  const val = document.getElementById('flagInput').value.trim();
+  const msg = document.getElementById('flagMsg');
+  if(val === 'FLAG{4es_3cb_p4tt3rn_l34k_s0m_m4st3r_h4ck3r}') {
+    msg.innerHTML='<span style="color:var(--gold)">★ CORRECT — FINAL FLAG CAPTURED — +500 POINTS ★</span>';
+    document.getElementById('successOverlay').style.display='flex';
+  } else {
+    msg.innerHTML='<span style="color:var(--red)">✗ INCORRECT — Use the decryption workbench above</span>';
+  }
+}
+</script>
+</body>
+</html>

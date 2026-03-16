@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CHALLENGES — Dark Night Rises by Som</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#030508;--bg2:#080d14;--bg3:#0d1520;--accent:#00ffe7;--accent2:#ff003c;--accent3:#7f00ff;--text:#c8d8e8;--dim:#4a6070;--glow:0 0 20px rgba(0,255,231,0.4);--font-mono:'Share Tech Mono',monospace;--font-display:'Orbitron',sans-serif;--font-body:'Rajdhani',sans-serif; }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--text);font-family:var(--font-body);cursor:crosshair;}
+  body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,231,0.012) 2px,rgba(0,255,231,0.012) 4px);pointer-events:none;z-index:9999;}
+  nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 40px;height:64px;background:rgba(3,5,8,0.95);border-bottom:1px solid rgba(0,255,231,0.1);backdrop-filter:blur(20px);}
+  .nav-brand{font-family:var(--font-display);font-size:13px;font-weight:900;color:var(--accent);text-shadow:var(--glow);letter-spacing:2px;text-decoration:none;}
+  .nav-links{display:flex;gap:32px;list-style:none;}
+  .nav-links a{font-family:var(--font-mono);font-size:12px;color:var(--dim);text-decoration:none;letter-spacing:2px;text-transform:uppercase;transition:color .2s;}
+  .nav-links a:hover,.nav-links a.active{color:var(--accent);}
+  .status-dot{width:6px;height:6px;border-radius:50%;background:#00ff88;box-shadow:0 0 8px #00ff88;animation:pulse 2s ease-in-out infinite;display:inline-block;margin-right:6px;}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+  .page-header{padding:120px 60px 40px;background:linear-gradient(180deg,rgba(0,255,231,0.03) 0%,transparent 100%);border-bottom:1px solid rgba(0,255,231,0.08);}
+  .page-tag{font-family:var(--font-mono);font-size:10px;color:var(--accent2);letter-spacing:4px;text-transform:uppercase;padding:4px 12px;border:1px solid var(--accent2);clip-path:polygon(6px 0,100% 0,calc(100% - 6px) 100%,0 100%);display:inline-block;margin-bottom:16px;}
+  .page-title{font-family:var(--font-display);font-size:42px;font-weight:900;color:#fff;letter-spacing:2px;margin-bottom:12px;}
+  .page-desc{font-family:var(--font-mono);font-size:12px;color:var(--dim);letter-spacing:1px;}
+  .filter-bar{padding:24px 60px;display:flex;gap:12px;align-items:center;border-bottom:1px solid rgba(0,255,231,0.06);}
+  .filter-btn{font-family:var(--font-mono);font-size:10px;letter-spacing:3px;text-transform:uppercase;padding:8px 20px;background:transparent;border:1px solid rgba(0,255,231,0.15);color:var(--dim);cursor:pointer;transition:all .2s;clip-path:polygon(5px 0,100% 0,calc(100% - 5px) 100%,0 100%);}
+  .filter-btn:hover,.filter-btn.active{background:rgba(0,255,231,0.08);border-color:var(--accent);color:var(--accent);}
+  .main{padding:40px 60px;}
+  .section-divider{font-family:var(--font-mono);font-size:10px;color:var(--dim);letter-spacing:4px;text-transform:uppercase;padding:16px 0;border-bottom:1px solid rgba(255,255,255,0.04);margin-bottom:24px;display:flex;align-items:center;gap:12px;}
+  .diff-indicator{padding:3px 12px;font-size:9px;clip-path:polygon(4px 0,100% 0,calc(100% - 4px) 100%,0 100%);}
+  .di-easy{background:rgba(0,255,100,.1);color:#00ff88;border:1px solid rgba(0,255,100,.3);}
+  .di-medium{background:rgba(255,180,0,.1);color:#ffb800;border:1px solid rgba(255,180,0,.3);}
+  .di-hard{background:rgba(255,0,60,.1);color:var(--accent2);border:1px solid rgba(255,0,60,.3);}
+  .challenges-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:2px;margin-bottom:48px;}
+  .chal-card{background:var(--bg2);border:1px solid rgba(0,255,231,0.08);padding:24px 28px;position:relative;overflow:hidden;transition:all .3s;text-decoration:none;color:inherit;display:block;}
+  .chal-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform .3s;}
+  .chal-card:hover{background:var(--bg3);border-color:rgba(0,255,231,0.2);transform:translateY(-2px);}
+  .chal-card:hover::before{transform:scaleX(1);}
+  .chal-solved{border-color:rgba(0,255,100,.2)!important;}
+  .chal-solved::before{background:#00ff88!important;transform:scaleX(1)!important;}
+  .chal-num{position:absolute;top:16px;right:20px;font-family:var(--font-display);font-size:32px;color:rgba(0,255,231,0.05);font-weight:900;}
+  .chal-cat{font-family:var(--font-mono);font-size:9px;color:var(--dim);letter-spacing:3px;text-transform:uppercase;margin-bottom:12px;}
+  .chal-title{font-family:var(--font-display);font-size:15px;font-weight:700;color:#fff;letter-spacing:1px;margin-bottom:10px;}
+  .chal-desc{font-family:var(--font-mono);font-size:12px;color:var(--dim);line-height:1.7;margin-bottom:20px;}
+  .chal-footer{display:flex;justify-content:space-between;align-items:center;}
+  .chal-pts{font-family:var(--font-mono);font-size:13px;color:var(--accent);font-weight:bold;}
+  .chal-solved-badge{font-family:var(--font-mono);font-size:10px;color:#00ff88;letter-spacing:2px;}
+  .solves-count{font-family:var(--font-mono);font-size:10px;color:var(--dim);letter-spacing:1px;}
+  .total-bar{background:var(--bg2);border:1px solid rgba(0,255,231,.08);padding:24px 40px;display:flex;gap:40px;justify-content:center;align-items:center;margin-bottom:40px;}
+  .total-item{text-align:center;}
+  .total-num{font-family:var(--font-display);font-size:28px;font-weight:900;color:var(--accent);text-shadow:var(--glow);display:block;}
+  .total-label{font-family:var(--font-mono);font-size:10px;color:var(--dim);letter-spacing:2px;text-transform:uppercase;}
+  .watermark{position:fixed;bottom:20px;right:30px;font-family:var(--font-mono);font-size:11px;color:rgba(0,255,231,.15);letter-spacing:3px;pointer-events:none;z-index:100;}
+  footer{padding:40px 60px;border-top:1px solid rgba(0,255,231,.08);display:flex;justify-content:space-between;align-items:center;}
+  .footer-brand{font-family:var(--font-display);font-size:11px;color:var(--dim);letter-spacing:3px;}
+  .footer-brand span{color:var(--accent);}
+</style>
+</head>
+<body>
+<div class="watermark">SOM // DNR</div>
+<nav>
+  <a href="../index.html" class="nav-brand">DARK NIGHT RISES</a>
+  <ul class="nav-links">
+    <li><a href="challenges.html" class="active">CHALLENGES</a></li>
+    <li><a href="scoreboard.html">SCOREBOARD</a></li>
+    <li><a href="rules.html">RULES</a></li>
+    <li><a href="login.html">LOGIN</a></li>
+  </ul>
+  <div><span class="status-dot"></span><span style="font-family:var(--font-mono);font-size:11px;color:#00ff88;">ONLINE</span></div>
+</nav>
+
+<div class="page-header">
+  <div class="page-tag">12 MISSIONS</div>
+  <h1 class="page-title">CHALLENGE BOARD</h1>
+  <p class="page-desc">// SELECT YOUR TARGET. BREACH THE SYSTEM. CAPTURE THE FLAG. //</p>
+</div>
+
+<div class="filter-bar">
+  <button class="filter-btn active" onclick="filter('all',this)">ALL</button>
+  <button class="filter-btn" onclick="filter('web',this)">WEB</button>
+  <button class="filter-btn" onclick="filter('crypto',this)">CRYPTO</button>
+  <button class="filter-btn" onclick="filter('recon',this)">RECON</button>
+  <button class="filter-btn" onclick="filter('easy',this)">EASY</button>
+  <button class="filter-btn" onclick="filter('medium',this)">MEDIUM</button>
+  <button class="filter-btn" onclick="filter('hard',this)">HARD</button>
+</div>
+
+<div class="main">
+  <div class="total-bar">
+    <div class="total-item"><span class="total-num">0</span><span class="total-label">Your Score</span></div>
+    <div class="total-item"><span class="total-num">0/12</span><span class="total-label">Solved</span></div>
+    <div class="total-item"><span class="total-num">72H</span><span class="total-label">Remaining</span></div>
+    <div class="total-item"><span class="total-num">2000</span><span class="total-label">Max Score</span></div>
+  </div>
+
+  <!-- EASY -->
+  <div class="section-divider"><span class="diff-indicator di-easy">EASY</span> BEGINNER TERRITORY // START HERE</div>
+  <div class="challenges-grid" id="grid-easy">
+    <a href="challenges/level1.html" class="chal-card" data-cat="web" data-diff="easy">
+      <div class="chal-num">01</div>
+      <div class="chal-cat">WEB // RECON</div>
+      <div class="chal-title">HIDDEN IN PLAIN SIGHT</div>
+      <div class="chal-desc">Developers sometimes leave secrets visible. Read carefully, operator — the flag is right in front of you.</div>
+      <div class="chal-footer"><span class="chal-pts">50 PTS</span><span class="solves-count">142 solves</span></div>
+    </a>
+    <a href="challenges/level2.html" class="chal-card" data-cat="web" data-diff="easy">
+      <div class="chal-num">02</div>
+      <div class="chal-cat">WEB // AUTH</div>
+      <div class="chal-title">COOKIE MONSTER</div>
+      <div class="chal-desc">Session cookies carry more data than you think. Check what the server sets after authentication.</div>
+      <div class="chal-footer"><span class="chal-pts">75 PTS</span><span class="solves-count">98 solves</span></div>
+    </a>
+    <a href="challenges/level3.html" class="chal-card" data-cat="recon" data-diff="easy">
+      <div class="chal-num">03</div>
+      <div class="chal-cat">RECON // DISCOVERY</div>
+      <div class="chal-title">ROBOTS.TXT EXPOSED</div>
+      <div class="chal-desc">Web crawlers must be told where NOT to go. That list of restricted paths is public knowledge.</div>
+      <div class="chal-footer"><span class="chal-pts">50 PTS</span><span class="solves-count">167 solves</span></div>
+    </a>
+    <a href="challenges/level4.html" class="chal-card" data-cat="crypto" data-diff="easy">
+      <div class="chal-num">04</div>
+      <div class="chal-cat">CRYPTO // ENCODING</div>
+      <div class="chal-title">BASE64 MAZE</div>
+      <div class="chal-desc">The encoded string is layered. Decode once, twice, three times — follow the rabbit hole down.</div>
+      <div class="chal-footer"><span class="chal-pts">75 PTS</span><span class="solves-count">121 solves</span></div>
+    </a>
+  </div>
+
+  <!-- MEDIUM -->
+  <div class="section-divider"><span class="diff-indicator di-medium">MEDIUM</span> INTERMEDIATE ZONE // KNOW YOUR TOOLS</div>
+  <div class="challenges-grid" id="grid-medium">
+    <a href="challenges/level5.html" class="chal-card" data-cat="web" data-diff="medium">
+      <div class="chal-num">05</div>
+      <div class="chal-cat">WEB // INJECTION</div>
+      <div class="chal-title">SQL INJECTION 101</div>
+      <div class="chal-desc">The login query trusts your input too much. Break the logic, read the database, claim the flag.</div>
+      <div class="chal-footer"><span class="chal-pts">150 PTS</span><span class="solves-count">63 solves</span></div>
+    </a>
+    <a href="challenges/level6.html" class="chal-card" data-cat="web" data-diff="medium">
+      <div class="chal-num">06</div>
+      <div class="chal-cat">WEB // XSS</div>
+      <div class="chal-title">XSS INJECTION</div>
+      <div class="chal-desc">The comment box reflects your input directly. Inject a script — find what the page reveals when executed.</div>
+      <div class="chal-footer"><span class="chal-pts">150 PTS</span><span class="solves-count">58 solves</span></div>
+    </a>
+    <a href="challenges/level7.html" class="chal-card" data-cat="web" data-diff="medium">
+      <div class="chal-num">07</div>
+      <div class="chal-cat">WEB // FILE INCLUSION</div>
+      <div class="chal-title">DIRECTORY TRAVERSAL</div>
+      <div class="chal-desc">The file reader parameter isn't validated. Navigate up the path and read files you shouldn't be able to.</div>
+      <div class="chal-footer"><span class="chal-pts">175 PTS</span><span class="solves-count">44 solves</span></div>
+    </a>
+    <a href="challenges/level8.html" class="chal-card" data-cat="crypto" data-diff="medium">
+      <div class="chal-num">08</div>
+      <div class="chal-cat">CRYPTO // JWT</div>
+      <div class="chal-title">JWT FORGERY</div>
+      <div class="chal-desc">The JWT uses algorithm "none" mode. Modify the payload, remove the signature, impersonate the admin.</div>
+      <div class="chal-footer"><span class="chal-pts">200 PTS</span><span class="solves-count">31 solves</span></div>
+    </a>
+  </div>
+
+  <!-- HARD -->
+  <div class="section-divider"><span class="diff-indicator di-hard">HARD</span> EXPERT DOMAIN // ELITE OPERATORS ONLY</div>
+  <div class="challenges-grid" id="grid-hard">
+    <a href="challenges/level9.html" class="chal-card" data-cat="web" data-diff="hard">
+      <div class="chal-num">09</div>
+      <div class="chal-cat">WEB // AUTH CHAIN</div>
+      <div class="chal-title">BROKEN AUTH CHAIN</div>
+      <div class="chal-desc">A multi-step password reset with logic flaws. Chain the vulnerabilities together to take over the admin account.</div>
+      <div class="chal-footer"><span class="chal-pts">300 PTS</span><span class="solves-count">19 solves</span></div>
+    </a>
+    <a href="challenges/level10.html" class="chal-card" data-cat="web" data-diff="hard">
+      <div class="chal-num">10</div>
+      <div class="chal-cat">WEB // SSRF</div>
+      <div class="chal-title">SSRF ATTACK</div>
+      <div class="chal-desc">The image fetcher makes server-side requests. Redirect it to internal endpoints and exfiltrate the flag.</div>
+      <div class="chal-footer"><span class="chal-pts">300 PTS</span><span class="solves-count">14 solves</span></div>
+    </a>
+    <a href="challenges/level11.html" class="chal-card" data-cat="web" data-diff="hard">
+      <div class="chal-num">11</div>
+      <div class="chal-cat">WEB // ACCESS CONTROL</div>
+      <div class="chal-title">IDOR ESCALATION</div>
+      <div class="chal-desc">User profile IDs are sequential integers. Enumerate them to find the admin profile and its hidden flag.</div>
+      <div class="chal-footer"><span class="chal-pts">350 PTS</span><span class="solves-count">11 solves</span></div>
+    </a>
+    <a href="challenges/level12.html" class="chal-card" data-cat="crypto" data-diff="hard">
+      <div class="chal-num">12</div>
+      <div class="chal-cat">CRYPTO // CIPHER</div>
+      <div class="chal-title">THE FINAL CIPHER</div>
+      <div class="chal-desc">AES-ECB with a repeating key weakness. Analyze the ciphertext patterns, derive the key, decrypt the master flag.</div>
+      <div class="chal-footer"><span class="chal-pts">500 PTS</span><span class="solves-count">5 solves</span></div>
+    </a>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-brand">DARK NIGHT RISES — <span>SOM</span> SECURITY LABS</div>
+  <div style="font-family:var(--font-mono);font-size:11px;color:rgba(0,255,231,.2);letter-spacing:4px;">// CRAFTED BY SOM //</div>
+</footer>
+
+<script>
+function filter(type, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.chal-card').forEach(card => {
+    const cat = card.dataset.cat, diff = card.dataset.diff;
+    if (type === 'all' || cat === type || diff === type) card.style.display = 'block';
+    else card.style.display = 'none';
+  });
+}
+</script>
+</body>
+</html>
