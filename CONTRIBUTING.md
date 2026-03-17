@@ -12,17 +12,17 @@ Thanks for your interest in contributing! Here's how to get involved.
 
 ## Adding a New Challenge
 
-1. Copy an existing challenge file (e.g. `challenges/level5.html`) as a template
-2. Keep the same structure: nav → breadcrumb → challenge-header → panels → flag-submit → success-overlay
-3. Add your challenge to `challenges.html` in the grid
-4. Link it from `index.html` challenge preview cards
+1. Copy an existing challenge module (e.g. `src/pages/challenges/level5.js`) as a template
+2. Keep the same structure: export a `template` string and an `init()` function with your logic
+3. Add your challenge to the grid in `src/pages/challenges.js`
+4. Register the new route hash mapping in `src/main.js`
 5. Follow the flag format: `FLAG{your_flag_here}`
 6. Submit a pull request with a description of the vulnerability being taught
 
 ## Code Style
 
-- Pure HTML/CSS/JS — no frameworks, no build tools
-- CSS variables for all colours (defined in `:root`)
+- Vanilla JS Modules with Vite — no heavyweight frameworks (React/Vue/Angular)
+- CSS variables for all colours (defined in `:root` inside `src/style.css`)
 - Share Tech Mono for code/terminal elements, Orbitron for headings
 - Dark theme only — background `#030508`, accent `#00ffe7`
 
