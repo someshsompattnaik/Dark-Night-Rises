@@ -1,86 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Level 12 — The Final Cipher | Dark Night Rises</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Rajdhani:wght@300;400;600&display=swap" rel="stylesheet">
-<style>
-*{margin:0;padding:0;box-sizing:border-box;}
-:root{--bg:#030508;--bg2:#080d14;--bg3:#0d1520;--cyan:#00ffe7;--red:#ff003c;--amber:#ffb800;--green:#00ff41;--gold:#ffd700;}
-body{background:var(--bg);color:#c8d8e8;font-family:'Rajdhani',sans-serif;min-height:100vh;}
-canvas#matrix{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;opacity:.05;}
-.scanlines{position:fixed;top:0;left:0;width:100%;height:100%;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,231,.015) 2px,rgba(0,255,231,.015) 4px);z-index:1;pointer-events:none;}
-nav{position:fixed;top:0;width:100%;z-index:100;background:rgba(3,5,8,.9);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,215,0,.2);padding:0 2rem;}
-.nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:60px;}
-.logo{font-family:'Orbitron',sans-serif;font-size:1rem;color:var(--cyan);letter-spacing:2px;text-decoration:none;}
-.logo span{color:#fff;}
-nav ul{display:flex;gap:2rem;list-style:none;}
-nav a{color:#7a8a9a;font-family:'Share Tech Mono',monospace;font-size:.8rem;text-decoration:none;transition:.2s;}
-nav a:hover{color:var(--cyan);}
-.status-dot{width:8px;height:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 12px var(--gold);animation:pulse 1s infinite;}
-@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
-main{position:relative;z-index:10;max-width:900px;margin:0 auto;padding:100px 2rem 4rem;}
-.breadcrumb{font-family:'Share Tech Mono',monospace;font-size:.75rem;color:#4a5a6a;margin-bottom:2rem;}
-.breadcrumb a{color:#4a5a6a;text-decoration:none;}
-.challenge-header{border:2px solid var(--gold);background:rgba(8,13,20,.9);padding:2rem;margin-bottom:2rem;clip-path:polygon(0 0,calc(100% - 20px) 0,100% 20px,100% 100%,0 100%);position:relative;overflow:hidden;}
-.challenge-header::before{content:'FINAL BOSS';position:absolute;right:-20px;top:10px;font-family:'Orbitron',sans-serif;font-size:5rem;color:rgba(255,215,0,.04);white-space:nowrap;pointer-events:none;}
-.badge-row{display:flex;gap:1rem;align-items:center;margin-bottom:1rem;flex-wrap:wrap;}
-.badge{font-family:'Share Tech Mono',monospace;font-size:.7rem;padding:.3rem .8rem;border:1px solid;clip-path:polygon(6px 0,100% 0,calc(100% - 6px) 100%,0 100%);}
-h1{font-family:'Orbitron',sans-serif;font-size:2rem;color:var(--gold);margin-bottom:.5rem;text-shadow:0 0 20px rgba(255,215,0,.3);}
-.desc{color:#7a8a9a;line-height:1.7;}
-.panel{border:1px solid rgba(0,255,231,.15);background:rgba(8,13,20,.7);padding:1.5rem;margin-bottom:1.5rem;}
-.panel.gold-panel{border-color:rgba(255,215,0,.3);}
-.panel-title{font-family:'Orbitron',sans-serif;font-size:.75rem;color:var(--cyan);letter-spacing:2px;margin-bottom:1rem;}
-.panel-title.gold{color:var(--gold);}
-.cipher-block{background:#000;border:1px solid rgba(0,255,231,.2);padding:1.5rem;font-family:'Share Tech Mono',monospace;font-size:.78rem;color:var(--green);line-height:2;word-break:break-all;position:relative;}
-.cipher-block .label{color:#4a5a6a;display:block;margin-bottom:.5rem;}
-.blocks-visual{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin:1rem 0;}
-.ecb-block{border:2px solid;padding:.5rem;text-align:center;font-family:'Share Tech Mono',monospace;font-size:.65rem;}
-.btn{font-family:'Orbitron',sans-serif;font-size:.75rem;letter-spacing:2px;padding:.75rem 1.5rem;border:1px solid var(--cyan);background:transparent;color:var(--cyan);cursor:pointer;clip-path:polygon(8px 0,100% 0,calc(100% - 8px) 100%,0 100%);transition:.2s;}
-.btn:hover{background:rgba(0,255,231,.1);}
-.btn-gold{border-color:var(--gold);color:var(--gold);}
-.btn-gold:hover{background:rgba(255,215,0,.1);}
-textarea{width:100%;background:#000;border:1px solid rgba(0,255,231,.2);color:var(--cyan);font-family:'Share Tech Mono',monospace;font-size:.75rem;padding:.75rem;resize:vertical;min-height:100px;outline:none;transition:.2s;}
-textarea:focus{border-color:var(--cyan);}
-.tool-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
-.response-box{background:#000;border:1px solid rgba(0,255,231,.15);padding:1rem;font-family:'Share Tech Mono',monospace;font-size:.78rem;min-height:80px;color:#c8d8e8;line-height:1.8;white-space:pre-wrap;margin-top:1rem;}
-.hint-box{border:1px solid rgba(255,184,0,.2);background:rgba(255,184,0,.04);padding:1rem;font-family:'Share Tech Mono',monospace;font-size:.78rem;color:var(--amber);line-height:1.8;}
-select{width:100%;background:#000;border:1px solid rgba(0,255,231,.2);color:var(--cyan);font-family:'Share Tech Mono',monospace;font-size:.8rem;padding:.6rem;outline:none;}
-label{font-family:'Share Tech Mono',monospace;font-size:.75rem;color:#4a8a7a;display:block;margin-bottom:.4rem;}
-.flag-submit{display:flex;gap:1rem;margin-top:1.5rem;}
-.flag-input{flex:1;background:#000;border:1px solid rgba(255,215,0,.3);color:var(--gold);font-family:'Share Tech Mono',monospace;font-size:.9rem;padding:.75rem 1rem;outline:none;clip-path:polygon(8px 0,100% 0,calc(100% - 8px) 100%,0 100%);}
-.success-overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.92);align-items:center;justify-content:center;}
-.success-box{border:2px solid var(--gold);background:#030508;padding:3rem;text-align:center;max-width:560px;width:90%;clip-path:polygon(20px 0,100% 0,100% calc(100% - 20px),calc(100% - 20px) 100%,0 100%,0 20px);box-shadow:0 0 60px rgba(255,215,0,.15);}
-.success-box h2{font-family:'Orbitron',sans-serif;color:var(--gold);font-size:1.8rem;margin-bottom:1rem;text-shadow:0 0 30px rgba(255,215,0,.5);}
-.success-flag{font-family:'Share Tech Mono',monospace;font-size:.85rem;color:var(--green);background:#000;padding:1rem;border:1px solid var(--green);margin:1rem 0;word-break:break-all;}
-.congrats{font-family:'Share Tech Mono',monospace;font-size:.85rem;color:var(--cyan);line-height:1.8;margin-top:1rem;}
-.watermark-br{position:fixed;bottom:20px;right:20px;font-family:'Share Tech Mono',monospace;font-size:.65rem;color:rgba(0,255,231,.12);z-index:50;text-align:right;pointer-events:none;}
-.watermark-side{position:fixed;left:-30px;top:50%;transform:translateY(-50%) rotate(-90deg);font-family:'Share Tech Mono',monospace;font-size:.6rem;color:rgba(0,255,231,.08);z-index:50;white-space:nowrap;pointer-events:none;letter-spacing:3px;}
-footer{position:relative;z-index:10;border-top:1px solid rgba(255,215,0,.1);padding:2rem;text-align:center;font-family:'Share Tech Mono',monospace;font-size:.7rem;color:#2a3a4a;margin-top:4rem;}
-</style>
-</head>
-<body>
-<canvas id="matrix"></canvas>
-<div class="scanlines"></div>
-<div class="watermark-br">SOM // DARK NIGHT RISES<br>CTF PLATFORM v1.0</div>
-<div class="watermark-side">SOM // CTF // DARK NIGHT RISES</div>
 
-<nav>
-  <div class="nav-inner">
-    <a href="../index.html" class="logo">DARK NIGHT <span>RISES</span></a>
-    <ul>
-      <li><a href="../index.html">HOME</a></li>
-      <li><a href="../challenges.html">CHALLENGES</a></li>
-      <li><a href="../scoreboard.html">SCOREBOARD</a></li>
-      <li><a href="../rules.html">RULES</a></li>
-    </ul>
-    <div class="status-dot"></div>
-  </div>
-</nav>
+export const template = `
+
+
+
+
+
+
+
 
 <main>
-  <div class="breadcrumb"><a href="../challenges.html">CHALLENGES</a> / LEVEL 12 / THE FINAL CIPHER</div>
+  <div class="breadcrumb"><a href="#/challenges">CHALLENGES</a> / LEVEL 12 / THE FINAL CIPHER</div>
 
   <div class="challenge-header">
     <div class="badge-row">
@@ -117,7 +46,9 @@ footer{position:relative;z-index:10;border-top:1px solid rgba(255,215,0,.1);padd
     <div class="tool-grid">
       <div>
         <label>PLAINTEXT INPUT:</label>
-        <textarea id="ptInput" placeholder="Enter plaintext to encrypt...&#10;Try: 'AAAAAAAAAAAAAAAA' (16 A's)&#10;Or:  'SOM_SECRET_VAULT'"></textarea>
+        <textarea id="ptInput" placeholder="Enter plaintext to encrypt...
+Try: 'AAAAAAAAAAAAAAAA' (16 A's)
+Or:  'SOM_SECRET_VAULT'"></textarea>
       </div>
       <div>
         <label>ORACLE OUTPUT (ECB encrypted):</label>
@@ -151,7 +82,7 @@ footer{position:relative;z-index:10;border-top:1px solid rgba(255,215,0,.1);padd
   <div class="panel gold-panel">
     <div class="panel-title gold">// FLAG SUBMISSION — FINAL CHALLENGE</div>
     <div class="flag-submit">
-      <input class="flag-input" type="text" id="flagInput" placeholder="FLAG{...}" />
+      <input class="flag-input" type="text" id="flagInput" placeholder="FLAG{...}">
       <button class="btn btn-gold" onclick="checkFlag()">⚡ SUBMIT FINAL FLAG</button>
     </div>
     <div id="flagMsg" style="margin-top:.75rem;font-family:'Share Tech Mono',monospace;font-size:.8rem;"></div>
@@ -175,9 +106,16 @@ footer{position:relative;z-index:10;border-top:1px solid rgba(255,215,0,.1);padd
   </div>
 </div>
 
-<footer>DARK NIGHT RISES // CTF PLATFORM BY SOM // FINAL CHALLENGE — ALL CHALLENGES ARE SIMULATED VULNERABILITIES FOR EDUCATIONAL PURPOSES</footer>
 
-<script>
+
+
+
+
+
+`;
+
+export const init = () => {
+    
 const c=document.getElementById('matrix');const ctx=c.getContext('2d');
 function resizeCanvas(){c.width=window.innerWidth;c.height=window.innerHeight;}
 resizeCanvas();window.addEventListener('resize',resizeCanvas);
@@ -260,6 +198,5 @@ function checkFlag() {
     msg.innerHTML='<span style="color:var(--red)">✗ INCORRECT — Use the decryption workbench above</span>';
   }
 }
-</script>
-</body>
-</html>
+
+};

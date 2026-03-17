@@ -1,75 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Rules | Dark Night Rises</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Rajdhani:wght@300;400;600&display=swap" rel="stylesheet">
-<style>
-*{margin:0;padding:0;box-sizing:border-box;}
-:root{--bg:#030508;--bg2:#080d14;--cyan:#00ffe7;--red:#ff003c;--amber:#ffb800;--green:#00ff41;}
-body{background:var(--bg);color:#c8d8e8;font-family:'Rajdhani',sans-serif;min-height:100vh;}
-canvas#matrix{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;opacity:.04;}
-.scanlines{position:fixed;top:0;left:0;width:100%;height:100%;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,231,.015) 2px,rgba(0,255,231,.015) 4px);z-index:1;pointer-events:none;}
-nav{position:fixed;top:0;width:100%;z-index:100;background:rgba(3,5,8,.9);backdrop-filter:blur(12px);border-bottom:1px solid rgba(0,255,231,.15);padding:0 2rem;}
-.nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:60px;}
-.logo{font-family:'Orbitron',sans-serif;font-size:1rem;color:var(--cyan);letter-spacing:2px;text-decoration:none;}
-.logo span{color:#fff;}
-nav ul{display:flex;gap:2rem;list-style:none;}
-nav a{color:#7a8a9a;font-family:'Share Tech Mono',monospace;font-size:.8rem;text-decoration:none;transition:.2s;}
-nav a:hover,nav a.active{color:var(--cyan);}
-.status-dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:pulse 2s infinite;}
-@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
-main{position:relative;z-index:10;max-width:900px;margin:0 auto;padding:100px 2rem 4rem;}
-h1{font-family:'Orbitron',sans-serif;font-size:2rem;color:var(--cyan);margin-bottom:.5rem;}
-.subtitle{font-family:'Share Tech Mono',monospace;font-size:.8rem;color:#4a5a6a;margin-bottom:3rem;}
-.rule-section{border:1px solid rgba(0,255,231,.15);background:rgba(8,13,20,.7);padding:2rem;margin-bottom:1.5rem;clip-path:polygon(0 0,calc(100% - 15px) 0,100% 15px,100% 100%,0 100%);}
-.rule-section h2{font-family:'Orbitron',sans-serif;font-size:1rem;color:var(--cyan);margin-bottom:1.2rem;letter-spacing:2px;}
-.rule-item{display:flex;gap:1rem;margin-bottom:1rem;align-items:flex-start;}
-.rule-num{font-family:'Orbitron',sans-serif;font-size:.9rem;color:var(--amber);min-width:30px;}
-.rule-text{font-family:'Rajdhani',sans-serif;font-size:.95rem;color:#c8d8e8;line-height:1.6;}
-.rule-text em{color:var(--cyan);font-style:normal;}
-.allowed-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem;}
-.allowed-col{border:1px solid;}
-.allowed-col.yes{border-color:rgba(0,255,65,.2);background:rgba(0,255,65,.03);}
-.allowed-col.no{border-color:rgba(255,0,60,.2);background:rgba(255,0,60,.03);}
-.allowed-col h3{font-family:'Orbitron',sans-serif;font-size:.75rem;letter-spacing:2px;padding:.75rem 1rem;border-bottom:1px solid inherit;}
-.allowed-col.yes h3{color:var(--green);}
-.allowed-col.no h3{color:var(--red);}
-.allowed-col ul{list-style:none;padding:1rem;}
-.allowed-col ul li{font-family:'Share Tech Mono',monospace;font-size:.78rem;padding:.3rem 0;color:#7a8a9a;border-bottom:1px solid rgba(255,255,255,.03);}
-.allowed-col ul li::before{content:'▶ ';color:#4a5a6a;}
-.points-table{width:100%;border-collapse:collapse;font-family:'Share Tech Mono',monospace;font-size:.8rem;}
-.points-table th{padding:.75rem 1rem;border-bottom:2px solid rgba(0,255,231,.2);color:#4a8a7a;text-align:left;}
-.points-table td{padding:.6rem 1rem;border-bottom:1px solid rgba(0,255,231,.05);color:#c8d8e8;}
-.points-table tr:hover td{background:rgba(0,255,231,.02);}
-.diff-easy{color:var(--green);}
-.diff-medium{color:var(--amber);}
-.diff-hard{color:var(--red);}
-.flag-format{background:#000;border:1px solid rgba(0,255,231,.3);padding:1.2rem;font-family:'Share Tech Mono',monospace;font-size:1rem;color:var(--cyan);text-align:center;margin:1rem 0;}
-.watermark-br{position:fixed;bottom:20px;right:20px;font-family:'Share Tech Mono',monospace;font-size:.65rem;color:rgba(0,255,231,.12);z-index:50;text-align:right;pointer-events:none;}
-footer{position:relative;z-index:10;border-top:1px solid rgba(0,255,231,.1);padding:2rem;text-align:center;font-family:'Share Tech Mono',monospace;font-size:.7rem;color:#2a3a4a;margin-top:4rem;}
-</style>
-</head>
-<body>
-<canvas id="matrix"></canvas>
-<div class="scanlines"></div>
-<div class="watermark-br">SOM // DARK NIGHT RISES<br>CTF PLATFORM v1.0</div>
 
-<nav>
-  <div class="nav-inner">
-    <a href="index.html" class="logo">DARK NIGHT <span>RISES</span></a>
-    <ul>
-      <li><a href="index.html">HOME</a></li>
-      <li><a href="challenges.html">CHALLENGES</a></li>
-      <li><a href="scoreboard.html">SCOREBOARD</a></li>
-      <li><a href="rules.html" class="active">RULES</a></li>
-    </ul>
-    <div class="status-dot"></div>
-  </div>
-</nav>
+export const template = `
 
-<main>
+
+
+
+
+
+
+
   <h1>// RULES &amp; GUIDELINES</h1>
   <p class="subtitle">READ CAREFULLY BEFORE COMPETING — DARK NIGHT RISES CTF BY SOM</p>
 
@@ -153,11 +91,18 @@ footer{position:relative;z-index:10;border-top:1px solid rgba(0,255,231,.1);padd
       <span style="color:#4a5a6a">Learn. Hack. Grow. Repeat.</span>
     </p>
   </div>
-</main>
 
-<footer>DARK NIGHT RISES // CTF PLATFORM BY SOM // ALL CHALLENGES ARE SIMULATED VULNERABILITIES FOR EDUCATIONAL PURPOSES</footer>
 
-<script>
+
+
+
+
+
+
+`;
+
+export const init = () => {
+    
 const c=document.getElementById('matrix');const ctx=c.getContext('2d');
 function resizeCanvas(){c.width=window.innerWidth;c.height=window.innerHeight;}
 resizeCanvas();window.addEventListener('resize',resizeCanvas);
@@ -165,6 +110,5 @@ const cols=Math.floor(window.innerWidth/20);const drops=Array(cols).fill(1);
 const chars='アイウエオ0123456789ABCDEF><{}[]SOM';
 function drawMatrix(){ctx.fillStyle='rgba(3,5,8,0.05)';ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle='#00ffe7';ctx.font='14px monospace';drops.forEach((y,i)=>{const ch=chars[Math.floor(Math.random()*chars.length)];ctx.fillText(ch,i*20,y*20);if(y*20>c.height&&Math.random()>.975)drops[i]=0;drops[i]++;});}
 setInterval(drawMatrix,50);
-</script>
-</body>
-</html>
+
+};

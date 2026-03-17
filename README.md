@@ -25,9 +25,9 @@
 
 ![Challenges](https://img.shields.io/badge/Challenges-12-00ffe7?style=for-the-badge&logo=target&logoColor=black)
 ![Points](https://img.shields.io/badge/Total%20Points-2375-ff003c?style=for-the-badge)
-![No Server](https://img.shields.io/badge/Server-Not%20Required-00ff41?style=for-the-badge&logo=html5&logoColor=black)
+![Architecture](https://img.shields.io/badge/Architecture-Vite%20SPA-00ff41?style=for-the-badge&logo=vite&logoColor=black)
 ![License](https://img.shields.io/badge/License-MIT-ffb800?style=for-the-badge)
-![Made With](https://img.shields.io/badge/Made%20With-HTML%20%2F%20CSS%20%2F%20JS-0d1520?style=for-the-badge)
+![Made With](https://img.shields.io/badge/Made%20With-Vanilla%20JS-0d1520?style=for-the-badge)
 
 </div>
 
@@ -35,7 +35,7 @@
 
 ## 🎯 What is this?
 
-**Dark Night Rises** is a self-contained, educational Capture The Flag (CTF) cybersecurity platform. No backend, no database, no installation — just open a browser and hack.
+**Dark Night Rises** is a self-contained, educational Capture The Flag (CTF) cybersecurity platform. It runs completely locally in your browser as a blazing fast Single Page Application (SPA) powered by Vite.
 
 It simulates **12 real-world web vulnerabilities** in a safe, legal, sandboxed environment. Each challenge teaches one exploitation technique, from beginner reconnaissance to advanced cryptographic attacks.
 
@@ -45,55 +45,55 @@ It simulates **12 real-world web vulnerabilities** in a safe, legal, sandboxed e
 
 ## 🚀 Quick Start
 
-### Option 1 — Python (Recommended)
+### Prerequisites
+You will need [Node.js](https://nodejs.org/) installed to run the build pipeline and development server.
+
+### Local Development Server
 ```bash
-git clone https://github.com/YOUR-USERNAME/dark-night-rises-ctf.git
+git clone https://github.com/someshsompattnaik/dark-night-rises-ctf.git
 cd dark-night-rises-ctf
-python3 -m http.server 8080
+npm install
+npm run dev
 ```
-Open → **http://localhost:8080**
+Open → **http://localhost:5173**
 
-### Option 2 — Node.js
+### Production Build
+To generate a heavily minified, heavily optimized set of static assets ready for deployment on any static file host (like GitHub Pages, Netlify, or AWS S3):
 ```bash
-git clone https://github.com/YOUR-USERNAME/dark-night-rises-ctf.git
-npx serve dark-night-rises-ctf -p 8080
+npm run build
 ```
-
-### Option 3 — PHP
+This will output the compiled application into a `dist/` directory. You can test the compiled production version locally using:
 ```bash
-cd dark-night-rises-ctf
-php -S localhost:8080
+npm run preview
 ```
-
-### Option 4 — Just open it
-Double-click `index.html` — most challenges work directly from the filesystem too.
 
 ---
 
 ## 🗂️ Repository Structure
 
-```
+```text
 dark-night-rises-ctf/
 │
-├── index.html              ← Main landing page
-├── login.html              ← Login page (contains Level 01 & 02 flags)
-├── challenges.html         ← Challenge browser with filters
-├── scoreboard.html         ← Live leaderboard with countdown timer
-├── rules.html              ← Rules, scoring table, allowed tools
+├── index.html              ← Main SPA shell container
+├── package.json            ← Dependencies and scripts (Vite)
+├── vite.config.js          ← (Optional) Build compilation config
 │
-└── challenges/
-    ├── level1.html         ← Hidden in Source Code       [Easy   · 50pts]
-    ├── level2.html         ← Cookie Monster              [Easy   · 75pts]
-    ├── level3.html         ← Robots.txt Exposed          [Easy   · 50pts]
-    ├── level4.html         ← Base64 Maze                 [Easy   · 75pts]
-    ├── level5.html         ← SQL Injection               [Medium · 150pts]
-    ├── level6.html         ← XSS Injection               [Medium · 150pts]
-    ├── level7.html         ← Directory Traversal         [Medium · 175pts]
-    ├── level8.html         ← JWT Forgery                 [Medium · 200pts]
-    ├── level9.html         ← Broken Auth Chain           [Hard   · 300pts]
-    ├── level10.html        ← SSRF Attack                 [Hard   · 300pts]
-    ├── level11.html        ← IDOR Escalation             [Hard   · 350pts]
-    └── level12.html        ← The Final Cipher            [Hard   · 500pts]
+├── src/
+│   ├── main.js             ← Client-side hash router logic
+│   ├── style.css           ← Centralized global CSS stylesheet
+│   │
+│   └── pages/              ← Dynamic page module components
+│       ├── index.js        
+│       ├── login.js        
+│       ├── challenges.js   
+│       ├── scoreboard.js   
+│       ├── rules.js        
+│       │
+│       └── challenges/     ← Vulnerability challenge modules
+│           ├── level1.js   ← Hidden in Source Code       [Easy   · 50pts]
+│           ├── level2.js   ← Cookie Monster              [Easy   · 75pts]
+│           ├── level5.js   ← SQL Injection               [Medium · 150pts]
+│           └── ... (levels 1 through 12)
 ```
 
 ---
@@ -120,13 +120,14 @@ dark-night-rises-ctf/
 
 ## 🖥️ Platform Features
 
+- **Vite SPA Architecture** — seamlessly fast client-side navigation via Javascript modules.
 - **Matrix rain** background with animated canvas
-- **12 interactive challenge pages** — each fully self-contained
+- **12 interactive challenge pages** — cleanly code-split dynamically.
 - **Simulated terminals**, query panels, network logs, and API explorers
 - **Flag submission with success overlays** on every challenge
 - **Live scoreboard** with countdown timer and podium display
 - **Challenge filter** by difficulty and category
-- **Zero backend** — everything runs in the browser
+- **Zero backend** — everything runs natively in the browser
 - **Dark hacker aesthetic** — Orbitron + Share Tech Mono fonts, cyan/red/amber palette
 
 ---
@@ -173,11 +174,11 @@ Full rules: [`rules.html`](rules.html)
 
 Want to fork and modify this for your own event?
 
-1. **Change flags** — search for `FLAG{` in each challenge file and replace with your own values
-2. **Change branding** — update `DARK NIGHT RISES` and `SOM` references in HTML/CSS
-3. **Add challenges** — follow the existing page structure (header → panel → flag-submit pattern)
-4. **Timer** — update the countdown initial value in `scoreboard.html`
-5. **Leaderboard** — edit the `players` array in `scoreboard.html` with real participant data
+1. **Change flags** — search for `FLAG{` in each component file (`src/pages/*.js`) and replace with your own values
+2. **Change branding** — update `DARK NIGHT RISES` and `SOM` references in the global `index.html` and components.
+3. **Add challenges** — define a new module component in `src/pages/challenges/`, register its path in the `src/main.js` router `routes` object, and link it in the `src/pages/challenges.js` grid.
+4. **Timer** — update the countdown initial value in the `src/pages/scoreboard.js` initialization script.
+5. **Leaderboard** — edit the `players` array layout logic in `src/pages/scoreboard.js` with real participant data.
 
 ---
 
