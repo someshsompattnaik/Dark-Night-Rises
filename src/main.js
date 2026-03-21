@@ -5,6 +5,7 @@ const routes = {
     '/scoreboard': 'scoreboard',
     '/rules': 'rules',
     '/login': 'login',
+    '/activity': 'activity',
     '/level1': 'level1',
     '/level2': 'level2',
     '/level3': 'level3',
@@ -38,7 +39,7 @@ const router = async () => {
     cleanup();
     let hash = window.location.hash.slice(1);
     if (!hash) hash = '/';
-    
+
     // update active nav links
     document.querySelectorAll('.route-link').forEach(link => {
         link.classList.remove('active');
@@ -48,7 +49,7 @@ const router = async () => {
     });
 
     const pageName = routes[hash] || 'index';
-    
+
     try {
         let pageModule;
         if (pageName.startsWith('level')) {
@@ -83,18 +84,18 @@ const initGlobalMatrix = () => {
     const canvas = document.getElementById('matrix-canvas');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
-    
+
     const resizeCanvas = () => {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
     };
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
-    
+
     const fontSize = 14;
     let cols = Math.floor(canvas.width / fontSize);
     let drops = Array(cols).fill(1);
-    
+
     // Re-initialize drops if screen grows
     window.addEventListener('resize', () => {
         const newCols = Math.floor(canvas.width / fontSize);
@@ -105,7 +106,7 @@ const initGlobalMatrix = () => {
     });
 
     const chars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノ01ABCDEF0123456789!@#$%^&*';
-    
+
     function drawMatrix() {
         ctx.fillStyle = 'rgba(3,5,8,0.05)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -118,7 +119,7 @@ const initGlobalMatrix = () => {
             drops[i]++;
         });
     }
-    
+
     setInterval(drawMatrix, 60);
 };
 

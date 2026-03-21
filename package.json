@@ -22,6 +22,6 @@
   "homepage": "https://github.com/jagdishtripathy/Dark-Night-Rises#readme",
   "devDependencies": {
     "cheerio": "^1.2.0",
-    "vite": "^8.0.0"
+    "vite": "^5.0.0"
   }
 }
